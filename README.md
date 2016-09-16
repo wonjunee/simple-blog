@@ -6,6 +6,8 @@ In order to run this blog, you need to install Google App Engine. You can see th
 If you don't have Python already you can install from here.
 https://www.python.org/downloads/
 
+After you download all of them and install them, save this repository on your local drive. Go to the folder you save this repository, type *"dev_appserver.py ."*. Then, you can go to *localhost:8080/* on your webbrowser and enjoy the blog page.
+
 ---
 Information
 ---------
