@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-
 <html>
-  <head>
-    <title>Unit 2 Signup</title>
-  </head>
+<head>
+  <link type="text/css" rel="stylesheet" href="/static/main.css" />
 
-  <body>
-    <h2>Welcome, {{username}}!</h2>
+  <title>Welcome Page</title>
+</head>
+
+  <body >
+    <a href="/blog" class="main-title">
+      CS 253 Blog
+    </a>
+    <h2 class="main-title">Welcome, {{username}}!</h2>
+    <div class="login-area">
+    {% if user %}
+      {{user.name}} (<a class="login-link" href="/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/login">login</a>
+      |
+      <a class="login-link" href="/signup">signup</a>
+    {% endif %}
+  </div>
+
   </body>
 </html>
