@@ -6,6 +6,9 @@ In order to run this blog, you need to install Google App Engine. You can see th
 If you don't have Python already you can install from here.
 https://www.python.org/downloads/
 
+---
+Information
+---------
 - **blog.py**: This is the python script that contains all of the class handlers for login, logout, signup, and blogs.
 - **app.yaml**: This is for Google App Engine. I had to update this in order to let Google App Engine to bring *Jinja2* library and to access *css* file from **static** folder.
 - **templates** folder: The folder contains all of the html templates that are used for the blog.
