@@ -77,6 +77,16 @@ input[type=submit] {
     text-decoration: none;
 }
 
+.sub-title {
+    display: block;
+    color: #222;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
 .post + .post {
     margin-top: 15px;
 }
@@ -89,7 +99,18 @@ input[type=submit] {
 .post-title {
     font-size: 24px;
     font-weight: bold;
+    text-decoration: none;
+    color: #222;
+
 }
+
+.post-edit {
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #999;
+}
+
 
 .post-date {
     position: absolute;
@@ -101,5 +122,23 @@ input[type=submit] {
 
 .post-content {
     margin-top: 5px;
+}
+
+.original-post {
+    font-size: 15px;
+    margin-left: 5%;
+}
+
+.pre-label {
+    font-size: 20px;
+    margin-left: 5%;
+    color: #777;
+}
+
+.input-login {
+    width: 500px;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
 }
 

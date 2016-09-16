@@ -1,11 +1,15 @@
 <div class="post">
   <div class="post-heading">
-    <div class="post-title">
+    <a href="/blog/{{p.key().id()}}"" class="post-title">
       {{p.subject}}
-    </div>
+    </a>
+    -
+    <a href="/blog/{{p.key().id()}}/edit" class="post-edit">
+      Edit
+    </a>
 
     <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}}
+      written by {{p.username}} - {{p.created.strftime("%b %d, %Y")}}
     </div>
   </div>
 
