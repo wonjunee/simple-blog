@@ -14,15 +14,17 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
-secret = 'fart'
+secret = 'helloworld'
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
+# Make User info more secure
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
+# Check if the user info is correct
 def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
@@ -55,6 +57,11 @@ class BlogHandler(webapp2.RequestHandler):
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
+    # Every request calls this initialize
+    # This function set the user parameter.
+    # This allows the blog to know if some user is logged in
+    # or none is logged in. If none then it shows "signup" link
+    # On the base page.
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
@@ -73,16 +80,20 @@ class MainPage(BlogHandler):
 def make_salt(length = 5):
     return ''.join(random.choice(letters) for x in xrange(length))
 
+# Creating Hash for password
 def make_pw_hash(name, pw, salt = None):
     if not salt:
         salt = make_salt()
     h = hashlib.sha256(name + pw + salt).hexdigest()
     return '%s,%s' % (salt, h)
 
+# Check the hash pw is same as the original one.
 def valid_pw(name, password, h):
     salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
 
+# don't have to do this but this will organize the database
+# when you have multiple of them
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
@@ -91,6 +102,8 @@ class User(db.Model):
     pw_hash = db.StringProperty(required = True)
     email = db.StringProperty()
 
+    # This is called a decorater.
+    # cls = class -> User not. self the class itself.
     @classmethod
     def by_id(cls, uid):
         return User.get_by_id(uid, parent = users_key())
@@ -100,6 +113,10 @@ class User(db.Model):
         u = User.all().filter('name =', name).get()
         return u
 
+    # Create a new user in User class
+    # It's important to use @classmethod because
+    # it allows to refer to User class itself
+    # instead of a particular instance of User class.
     @classmethod
     def register(cls, name, pw, email = None):
         pw_hash = make_pw_hash(name, pw)
@@ -170,6 +187,7 @@ class NewPost(BlogHandler):
             error = "subject and content, please!"
             self.render("newpost.html", subject=subject, content=content, username = username,  error=error)
 
+# A class for editing a post
 class EditPost(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -189,12 +207,17 @@ class EditPost(BlogHandler):
         username = self.user.name
 
         if subject and content:
+            # find a post from the database
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             p = db.get(key)
+
+            # Update the post
             p.subject = subject
             p.content = content
             p.username = username
             p.put()
+
+            # Redirect to the single post page with an updated post
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
             error = "subject and content, please!"
@@ -258,10 +281,17 @@ class Register(Signup):
             msg = 'That user already exists.'
             self.render('signup-form.html', error_username = msg)
         else:
+            # Create a new User instance
             u = User.register(self.username, self.password, self.email)
+
+            # Insert into the database
             u.put()
 
+            # login is from BlogHandler class
+            # It creates a secure cookie for a user
             self.login(u)
+
+            # Redirect to the welcome page
             self.redirect('/welcome')
 
 class Login(BlogHandler):
