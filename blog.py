@@ -322,14 +322,14 @@ class Welcome(BlogHandler):
         else:
             self.redirect('/signup')
 
-app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/blog/?', BlogFront),
-                               ('/blog/([0-9]+)', PostPage),
-                               ('/blog/newpost', NewPost),
+app = webapp2.WSGIApplication([
+                               ('/?', BlogFront),
+                               ('/([0-9]+)', PostPage),
+                               ('/newpost', NewPost),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
                                ('/welcome', Welcome),
-                               ('/blog/([0-9]+)/edit', EditPost),
+                               ('/([0-9]+)/edit', EditPost),
                                ],
                               debug=True)
