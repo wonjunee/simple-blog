@@ -92,6 +92,16 @@ input[type=text], input[type=password] {
     text-decoration: none;
 }
 
+.main-button {
+    display: block;
+    color: #999;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
 .post + .post {
     margin-top: 15px;
 }

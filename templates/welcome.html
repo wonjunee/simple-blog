@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link type="text/css" rel="stylesheet" href="/static/main.css" />
+{% extends "base.html" %}
 
-  <title>Welcome Page</title>
-</head>
-
-  <body >
-    <a href="/blog" class="main-title">
-      CS 253 Blog
-    </a>
+{% block content %}
     <h2 class="main-title">Welcome, {{username}}!</h2>
     <div class="login-area">
     {% if user %}
@@ -20,5 +11,4 @@
       <a class="login-link" href="/signup">signup</a>
     {% endif %}
 
-  </body>
-</html>
+{% endblock %}

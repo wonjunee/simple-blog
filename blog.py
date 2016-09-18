@@ -194,7 +194,10 @@ class EditPost(BlogHandler):
         post = db.get(key)
 
         if self.user:
-            self.render("editpost.html", post = post)
+        	if self.user.name == post.username:
+	            self.render("editpost.html", post = post)
+	        else:
+	        	self.redirect("/notallowed")
         else:
             self.redirect("/login")
 
@@ -322,6 +325,12 @@ class Welcome(BlogHandler):
         else:
             self.redirect('/signup')
 
+# This class is for the page that alerts users if
+# they attempt to edit posts that are written by others
+class NotAllowed(BlogHandler):
+	def get(self):
+		self.render('notallowed.html')
+
 app = webapp2.WSGIApplication([
                                ('/?', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -331,5 +340,6 @@ app = webapp2.WSGIApplication([
                                ('/logout', Logout),
                                ('/welcome', Welcome),
                                ('/([0-9]+)/edit', EditPost),
+                               ('/notallowed', NotAllowed)
                                ],
                               debug=True)
