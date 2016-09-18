@@ -195,7 +195,7 @@ class EditPost(BlogHandler):
 
         if self.user:
         	if self.user.name == post.username:
-	            self.render("editpost.html", post = post)
+	            self.render("editpost.html", post = post, content=post.content, subject=post.subject)
 	        else:
 	        	self.redirect("/notallowed")
         else:
@@ -225,6 +225,35 @@ class EditPost(BlogHandler):
         else:
             error = "subject and content, please!"
             self.render("editpost.html", subject=subject, content=content, username = username,  error=error)
+
+# A class for deleting a post
+class DeletePost(BlogHandler):
+	def get(self, post_id):
+		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		post = db.get(key)
+
+		if self.user:
+			if self.user.name == post.username:
+			    self.render("deletepost.html", post = post, content=post.content, subject=post.subject)
+			else:
+				self.redirect("/notallowed")
+		else:
+		    self.redirect("/login")
+
+	def post(self, post_id):
+		if not self.user:
+			self.redirect('/')
+
+		delete_choice = self.request.get('q')
+		username = self.user.name
+
+		if delete_choice == "yes":
+			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+			post = db.get(key)
+			post.delete()
+			self.redirect('/deleted')
+		elif delete_choice == "no":
+			self.redirect('/')
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -331,6 +360,11 @@ class NotAllowed(BlogHandler):
 	def get(self):
 		self.render('notallowed.html')
 
+# This class confirms the deletion of posts
+class Deleted(BlogHandler):
+	def get(self):
+		self.render('deleted.html')
+
 app = webapp2.WSGIApplication([
                                ('/?', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -340,6 +374,8 @@ app = webapp2.WSGIApplication([
                                ('/logout', Logout),
                                ('/welcome', Welcome),
                                ('/([0-9]+)/edit', EditPost),
-                               ('/notallowed', NotAllowed)
+                               ('/([0-9]+)/delete', DeletePost),
+                               ('/notallowed', NotAllowed),
+                               ('/deleted', Deleted)
                                ],
                               debug=True)
