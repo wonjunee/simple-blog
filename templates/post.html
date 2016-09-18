@@ -5,15 +5,18 @@
     </a>
     -
     <a href="/{{p.key().id()}}/edit" class="post-edit">
-      Edit
+      Like
     </a>
-    -
-    <a href="/{{p.key().id()}}/delete" class="post-edit">
-      Delete
-    </a>
+    {{like_number}}
 
     <div class="post-date">
       written by {{p.username}} - {{p.created.strftime("%b %d, %Y")}}
+    <a href="/{{p.key().id()}}/edit" class="post-edit">
+      Edit
+    </a>
+    <a href="/{{p.key().id()}}/delete" class="post-edit">
+      Delete
+    </a>
     </div>
   </div>
 

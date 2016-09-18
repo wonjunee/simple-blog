@@ -143,6 +143,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
     username = db.StringProperty(required = True)
+    like_number = db.StringProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -178,9 +179,10 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         username = self.user.name
+        like_number = 0
 
         if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content, username = username)
+            p = Post(parent = blog_key(), subject = subject, content = content, username = username, like_number = like_number)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:
@@ -239,6 +241,35 @@ class DeletePost(BlogHandler):
 				self.redirect("/notallowed")
 		else:
 		    self.redirect("/login")
+
+	def post(self, post_id):
+		if not self.user:
+			self.redirect('/')
+
+		delete_choice = self.request.get('q')
+		username = self.user.name
+
+		if delete_choice == "yes":
+			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+			post = db.get(key)
+			post.delete()
+			self.redirect('/deleted')
+		elif delete_choice == "no":
+			self.redirect('/')
+
+# A class for liking a post
+class LikePost(BlogHandler):
+	# def get(self, post_id):
+	# 	key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+	# 	post = db.get(key)
+
+	# 	if self.user:
+	# 		if self.user.name == post.username:
+	# 		    self.render("deletepost.html", post = post, content=post.content, subject=post.subject)
+	# 		else:
+	# 			self.redirect("/notallowed")
+	# 	else:
+	# 	    self.redirect("/login")
 
 	def post(self, post_id):
 		if not self.user:
