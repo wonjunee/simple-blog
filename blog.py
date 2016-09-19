@@ -179,7 +179,7 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         username = self.user.name
-        like_number = "0|"
+        like_number = "0| "
 
         if subject and content:
             p = Post(parent = blog_key(), subject = subject, content = content, username = username, like_number = like_number)
@@ -260,13 +260,26 @@ class DeletePost(BlogHandler):
 # A class for liking a post
 class LikePost(BlogHandler):
 	def get(self, post_id):
+		if not self.user:
+			self.redirect('/login')
+
 		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
 		post = db.get(key)
-		like_number, users = post.like_number.split("|")
-		like_number = like_number[0]
+		post_like = post.like_number.split("|")
+		like_number = int(post_like[0])
+		if post_like[1]:
+			users = post_like[1].split(",")
+		else:
+			users = []
+
 		if self.user.name in users:
-			
-		post.like_number  = str(int(post.like_number) + 1)
+			like_number -= 1
+			users.remove(self.user.name)
+		else:
+			like_number += 1
+			users.append(self.user.name)
+		users = ",".join(users)
+		post.like_number  = "{}|{}".format(like_number, users)
 		post.put()
 
 		self.redirect("/")
