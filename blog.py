@@ -155,36 +155,6 @@ class BlogFront(BlogHandler):
 		posts = Post.all().order('-created')
 		self.render('front.html', posts = posts)
 
-	def post(self):
-		post_id = self.request.get("post_id")
-		# self.redirect('/{}/like'.format(post_id))
-		if not self.user:
-			self.redirect('/login')
-		else:
-			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-			post = db.get(key)
-			like_number = int(post.like_number)
-			if not post.like_users:
-				users = []
-			else:
-				users = post.like_users.split(",")
-
-			if self.user.name in users:
-				like_number -= 1
-				users.remove(self.user.name)
-			else:
-				like_number += 1
-				users.append(self.user.name)
-
-			users = ",".join(users)
-			post.like_number  = str(like_number)
-			post.like_users = users
-			post.put()
-
-			posts = Post.all().order('-created')
-			
-			self.render('front.html', posts = posts)
-
 class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
