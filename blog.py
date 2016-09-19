@@ -277,9 +277,11 @@ class LikePost(BlogHandler):
 			if self.user.name in users:
 				like_number -= 1
 				users.remove(self.user.name)
+				like_url = "/like0"
 			else:
 				like_number += 1
 				users.append(self.user.name)
+				like_url = "/like1"
 
 			users = ",".join(users)
 			post.like_number  = str(like_number)
@@ -289,7 +291,7 @@ class LikePost(BlogHandler):
 			posts = Post.all().order('-created')
 			
 			self.render('front.html', posts = posts)
-			self.redirect('/')
+			self.redirect(like_url)
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -401,6 +403,16 @@ class Deleted(BlogHandler):
 	def get(self):
 		self.render('deleted.html')
 
+# This class confirms the like of posts
+class Liked(BlogHandler):
+	def get(self, like):
+		if like == "0":
+			msg = "You unliked this post"
+		else:
+			msg = "Thanks for liking this post!"
+		# self.render('like.html', like = like)
+		self.render('like.html', like=msg)
+
 app = webapp2.WSGIApplication([
                                ('/?', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -413,6 +425,7 @@ app = webapp2.WSGIApplication([
                                ('/([0-9]+)/delete', DeletePost),
                                ('/([0-9]+)/like', LikePost),
                                ('/notallowed', NotAllowed),
-                               ('/deleted', Deleted)
+                               ('/deleted', Deleted),
+                               ('/like([0-9])', Liked)
                                ],
                               debug=True)
