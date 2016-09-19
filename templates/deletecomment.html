@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <br>
+  <h3 class="sub-title">Are you sure you want to delete this comment?</h3>
+    <label>
+      <div class="pre-label">comment</div>
+      <p class="original-post"> {{comment}} </p>
+    </label>
+
+    <br>
+
+    <form method="post">
+      <label>
+        <div class="sub-title">Yes
+        <input type="radio" name="q" value="yes">
+        </div>
+      </label>
+
+      <label>
+        <div class="sub-title">No
+        <input type="radio" name="q" value="no">
+        </div>
+      </label>
+      <br>
+      <div class="sub-title">
+      <input type="submit">
+      </div>
+    </form>
+{% endblock %}

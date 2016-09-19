@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>new comment</h2>
 <form method="post" class="comment">
-  <div>New Comment for <a href="/blog/{{pkey.id()}}">{{subject}}</a></div>
+  <div class="comment-heading">New Comment for Subject: {{subject}}</div>
   <p>{{content}}</p>
+  <div class="comment-heading">Write a comment</div>
   <label>
-    <textarea name="comment"></textarea>
+    <textarea class="comment" name="comment"></textarea>
     <input type="hidden" name="author" value="{{user.name}}">
   </label>
 

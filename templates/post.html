@@ -24,15 +24,25 @@
 
   <br>
   <div class="comment-heading">
-    {{p.comments.count()}} {% if p.comments.count()>1 %}Comments{% else %}Comment{% endif %}
+    {{p.comments.count()}} {% if p.comments.count() > 1 %}Comments{% else %}Comment{% 
+    endif %}
   </div>
   <div class="comments-contents">
     {% for comment in p.comments %}
-      username: {{comment.username}} <br>
-      created: {{comment.created}} <br>
-      comment: {{comment.comment}} <br>
+      {{comment.comment}} - <b>{{comment.username}}</b> <br>
+      {{comment.created.strftime("%b %d, %Y")}}
+      <a href="/{{p.key().id()}}/comment/{{comment.key().id()}}/edit" class="comment-edit">
+        Edit
+      </a>
+      <a href="/{{p.key().id()}}/comment/{{comment.key().id()}}/delete" class="comment-edit">
+        Delete
+      </a><br>
       <br>
     {% endfor %}
   </div>
+
+  <a href="/{{p.key().id()}}/comment" class="post-edit">
+    Add a comment
+  </a>
 
 </div>

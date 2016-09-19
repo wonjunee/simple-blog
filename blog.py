@@ -154,13 +154,6 @@ class Post(db.Model):
     def comments(self):
         return Comment.all().filter("post = ", str(self.key().id()))
 
-# DB for comments
-class Comment(db.Model):
-    post = db.StringProperty(required = True)
-    comment = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
-    username = db.StringProperty(required = True)
-
 class BlogFront(BlogHandler):
 	def get(self):
 		posts = Post.all().order('-created')
@@ -211,7 +204,7 @@ class EditPost(BlogHandler):
         	if self.user.name == post.username:
 	            self.render("editpost.html", post = post, content=post.content, subject=post.subject)
 	        else:
-	        	self.redirect("/notallowed")
+	        	self.redirect("/notallowed0")
         else:
             self.redirect("/login")
 
@@ -250,7 +243,7 @@ class DeletePost(BlogHandler):
 			if self.user.name == post.username:
 			    self.render("deletepost.html", post = post, content=post.content, subject=post.subject)
 			else:
-				self.redirect("/notallowed")
+				self.redirect("/notallowed0")
 		else:
 		    self.redirect("/login")
 
@@ -271,38 +264,41 @@ class DeletePost(BlogHandler):
 
 # A class for liking a post
 class LikePost(BlogHandler):
-	def get(self, post_id):
-		if not self.user:
-			self.redirect('/login')
-		else:
-	# 		self.post(post_id)
-	# def post(self, post_id):
-			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-			post = db.get(key)
-			like_number = int(post.like_number)
-			if not post.like_users:
-				users = []
-			else:
-				users = post.like_users.split(",")
+    def get(self, post_id):
+        if not self.user:
+            self.redirect('/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
 
-			if self.user.name in users:
-				like_number -= 1
-				users.remove(self.user.name)
-				like_url = "/like0"
-			else:
-				like_number += 1
-				users.append(self.user.name)
-				like_url = "/like1"
+            # The writer cannot like his own post
+            if self.user.name == post.username:
+                self.redirect('/')
+            else:
+                like_number = int(post.like_number)
+                if not post.like_users:
+                    users = []
+                else:
+                    users = post.like_users.split(",")
 
-			users = ",".join(users)
-			post.like_number  = str(like_number)
-			post.like_users = users
-			post.put()
+                if self.user.name in users:
+                    like_number -= 1
+                    users.remove(self.user.name)
+                    like_url = "/like0"
+                else:
+                    like_number += 1
+                    users.append(self.user.name)
+                    like_url = "/like1"
 
-			posts = Post.all().order('-created')
-			
-			self.render('front.html', posts = posts)
-			self.redirect(like_url)
+                users = ",".join(users)
+                post.like_number  = str(like_number)
+                post.like_users = users
+                post.put()
+
+                posts = Post.all().order('-created')
+
+                self.render('front.html', posts = posts)
+                self.redirect(like_url)
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -403,27 +399,12 @@ class Welcome(BlogHandler):
         else:
             self.redirect('/signup')
 
-# This class is for the page that alerts users if
-# they attempt to edit posts that are written by others
-class NotAllowed(BlogHandler):
-	def get(self):
-		self.render('notallowed.html')
-
-# This class confirms the deletion of posts
-class Deleted(BlogHandler):
-	def get(self):
-		self.render('deleted.html')
-
-# This class confirms the like of posts
-class Liked(BlogHandler):
-	def get(self, like):
-		if like == "0":
-			msg = "You unliked this post"
-		else:
-			msg = "Thanks for liking this post!"
-		# self.render('like.html', like = like)
-		self.render('like.html', like=msg)
-
+# DB for comments
+class Comment(db.Model):
+    post = db.StringProperty(required = True)
+    comment = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    username = db.StringProperty(required = True)
 
 class NewComment(BlogHandler):
     def get(self,post_id):
@@ -432,8 +413,6 @@ class NewComment(BlogHandler):
         post = Post.get_by_id(int(post_id), parent=blog_key())
         subject = post.subject
         content = post.content
-        subject = "asdf"
-        content = "aaaa"
         self.render(
             "newcomment.html",
             subject=subject,
@@ -472,6 +451,94 @@ class NewComment(BlogHandler):
         else:
             self.redirect("/login")
 
+
+# A class for editing a comment
+class EditComment(BlogHandler):
+    def get(self, post_id, comment_id):
+        key = db.Key.from_path('Comment', int(comment_id), parent=self.user.key())
+        comment = db.get(key)
+        if self.user:
+            if not comment:
+                self.redirect('/notallowed1')
+            else:
+                self.render("editcomment.html", comment=comment.comment)
+        else:
+            self.redirect("/login")
+
+    def post(self, post_id, comment_id):
+        if not self.user:
+            self.redirect('/')
+
+        usercomment = self.request.get('comment')
+
+        if usercomment:
+            key = db.Key.from_path('Comment', int(comment_id), parent=self.user.key())
+            comment = db.get(key)
+            comment.comment = usercomment
+            comment.put()
+
+            self.redirect('/%s' %post_id)
+        else:
+            error = "comment, please!"
+            self.render("editcomment.html", comment=usercomment, error=error)
+
+# A class for deleting a comment
+class DeleteComment(BlogHandler):
+    def get(self, post_id, comment_id):
+        key = db.Key.from_path('Comment', int(comment_id), parent=self.user.key())
+        comment = db.get(key)
+
+        if self.user:
+            if comment:
+                self.render("deletecomment.html", comment=comment.comment)
+            else:
+                self.redirect("/notallowed1")
+        else:
+            self.redirect("/login")
+
+    def post(self, post_id, comment_id):
+        if not self.user:
+            self.redirect('/')
+
+        delete_choice = self.request.get('q')
+
+        if delete_choice == "yes":
+            key = db.Key.from_path('Comment', int(comment_id), parent=self.user.key())
+            comment = db.get(key)
+            comment.delete()
+            self.redirect('/deleted1')
+        elif delete_choice == "no":
+            self.redirect('/')
+
+# This class is for the page that alerts users if
+# they attempt to edit posts that are written by others
+class NotAllowed(BlogHandler):
+    def get(self, post_comment):
+        if post_comment == "0":
+            post_comment = "Post"
+        else:
+            post_comment = "Comment"
+        self.render('notallowed.html', type=post_comment)
+
+# This class confirms the deletion of posts
+class Deleted(BlogHandler):
+    def get(self, post_comment):
+        if post_comment == "0":
+            post_comment = "Post"
+        else:
+            post_comment = "Comment"
+        self.render('deleted.html', post_comment=post_comment)
+
+# This class confirms the like of posts
+class Liked(BlogHandler):
+    def get(self, like):
+        if like == "0":
+            msg = "You unliked this post"
+        else:
+            msg = "Thanks for liking this post!"
+        # self.render('like.html', like = like)
+        self.render('like.html', like=msg)
+
 app = webapp2.WSGIApplication([
                                ('/?', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -483,9 +550,11 @@ app = webapp2.WSGIApplication([
                                ('/([0-9]+)/edit', EditPost),
                                ('/([0-9]+)/delete', DeletePost),
                                ('/([0-9]+)/like', LikePost),
-                               ('/([0-9]+)/comment', NewComment),
-                               ('/notallowed', NotAllowed),
-                               ('/deleted', Deleted),
+                               ('/([0-9]+)/comment/?', NewComment),
+                               ('/([0-9]+)/comment/([0-9]+)/edit', EditComment),
+                               ('/([0-9]+)/comment/([0-9]+)/delete', DeleteComment),
+                               ('/notallowed([0-9])', NotAllowed),
+                               ('/deleted([0-9])', Deleted),
                                ('/like([0-9])', Liked)
                                ],
                               debug=True)
