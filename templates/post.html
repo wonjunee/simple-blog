@@ -1,13 +1,14 @@
 <div class="post">
   <div class="post-heading">
-    <a href="/{{p.key().id()}}"" class="post-title">
-      {{p.subject}}
-    </a>
-    -
-    <a href="/{{p.key().id()}}/like" class="post-edit">
-      Like - {{p.like_number}}
-    </a>
-    {{like_number}}
+    <form method="post">
+      <a href="/{{p.key().id()}}"" class="post-title">
+        {{p.subject}}
+      </a>
+      <input type="hidden" name="post_id" value="{{p.key().id()}}">
+      <input type="submit" value="Like" >
+        {{p.like_number}}
+      </a>
+    </form>
 
     <div class="post-date">
       written by {{p.username}} - {{p.created.strftime("%b %d, %Y")}}
@@ -23,4 +24,6 @@
   <div class="post-content">
     {{p._render_text | safe}}
   </div>
+
+  <div class
 </div>

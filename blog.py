@@ -143,16 +143,47 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
     username = db.StringProperty(required = True)
-    like_number = db.TextProperty()
+    like_users = db.TextProperty()
+    like_number = db.StringProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
 class BlogFront(BlogHandler):
-    def get(self):
-        posts = Post.all().order('-created')
-        self.render('front.html', posts = posts)
+	def get(self):
+		posts = Post.all().order('-created')
+		self.render('front.html', posts = posts)
+
+	def post(self):
+		post_id = self.request.get("post_id")
+		# self.redirect('/{}/like'.format(post_id))
+		if not self.user:
+			self.redirect('/login')
+		else:
+			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+			post = db.get(key)
+			like_number = int(post.like_number)
+			if not post.like_users:
+				users = []
+			else:
+				users = post.like_users.split(",")
+
+			if self.user.name in users:
+				like_number -= 1
+				users.remove(self.user.name)
+			else:
+				like_number += 1
+				users.append(self.user.name)
+
+			users = ",".join(users)
+			post.like_number  = str(like_number)
+			post.like_users = users
+			post.put()
+
+			posts = Post.all().order('-created')
+			
+			self.render('front.html', posts = posts)
 
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -179,7 +210,7 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         username = self.user.name
-        like_number = "0| "
+        like_number = "0"
 
         if subject and content:
             p = Post(parent = blog_key(), subject = subject, content = content, username = username, like_number = like_number)
@@ -262,27 +293,34 @@ class LikePost(BlogHandler):
 	def get(self, post_id):
 		if not self.user:
 			self.redirect('/login')
-
-		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-		post = db.get(key)
-		post_like = post.like_number.split("|")
-		like_number = int(post_like[0])
-		if post_like[1]:
-			users = post_like[1].split(",")
 		else:
-			users = []
+	# 		self.post(post_id)
+	# def post(self, post_id):
+			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+			post = db.get(key)
+			like_number = int(post.like_number)
+			if not post.like_users:
+				users = []
+			else:
+				users = post.like_users.split(",")
 
-		if self.user.name in users:
-			like_number -= 1
-			users.remove(self.user.name)
-		else:
-			like_number += 1
-			users.append(self.user.name)
-		users = ",".join(users)
-		post.like_number  = "{}|{}".format(like_number, users)
-		post.put()
+			if self.user.name in users:
+				like_number -= 1
+				users.remove(self.user.name)
+			else:
+				like_number += 1
+				users.append(self.user.name)
 
-		self.redirect("/")
+			users = ",".join(users)
+			post.like_number  = str(like_number)
+			post.like_users = users
+			post.put()
+
+			posts = Post.all().order('-created')
+			
+			self.render('front.html', posts = posts)
+			self.redirect('/')
+
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
