@@ -22,5 +22,17 @@
     {{p._render_text | safe}}
   </div>
 
-  <div class
+  <br>
+  <div class="comment-heading">
+    {{p.comments.count()}} {% if p.comments.count()>1 %}Comments{% else %}Comment{% endif %}
+  </div>
+  <div class="comments-contents">
+    {% for comment in p.comments %}
+      username: {{comment.username}} <br>
+      created: {{comment.created}} <br>
+      comment: {{comment.comment}} <br>
+      <br>
+    {% endfor %}
+  </div>
+
 </div>

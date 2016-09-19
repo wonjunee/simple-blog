@@ -150,6 +150,17 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+    @property
+    def comments(self):
+        return Comment.all().filter("post = ", str(self.key().id()))
+
+# DB for comments
+class Comment(db.Model):
+    post = db.StringProperty(required = True)
+    comment = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    username = db.StringProperty(required = True)
+
 class BlogFront(BlogHandler):
 	def get(self):
 		posts = Post.all().order('-created')
@@ -413,6 +424,54 @@ class Liked(BlogHandler):
 		# self.render('like.html', like = like)
 		self.render('like.html', like=msg)
 
+
+class NewComment(BlogHandler):
+    def get(self,post_id):
+        if not self.user:
+            return self.redirect("/login")
+        post = Post.get_by_id(int(post_id), parent=blog_key())
+        subject = post.subject
+        content = post.content
+        subject = "asdf"
+        content = "aaaa"
+        self.render(
+            "newcomment.html",
+            subject=subject,
+            content=content,
+            pkey=post.key())
+
+    def post(self, post_id):
+        if self.user:
+            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not post:
+                self.error(404)
+                return
+            if not self.user:
+                return self.redirect("login")
+            comment = self.request.get("comment")
+
+            if comment:
+                # check how author was defined
+                username = self.user.name
+                c = Comment(
+                    comment=comment,
+                    post=post_id,
+                    parent=self.user.key(),
+                    username=username)
+                c.put()
+                self.redirect("/%s" % str(post_id))
+
+            else:
+                error = "please comment"
+                self.render(
+                    "permalink.html",
+                    post=post,
+                    content=content,
+                    error=error)
+        else:
+            self.redirect("/login")
+
 app = webapp2.WSGIApplication([
                                ('/?', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -424,6 +483,7 @@ app = webapp2.WSGIApplication([
                                ('/([0-9]+)/edit', EditPost),
                                ('/([0-9]+)/delete', DeletePost),
                                ('/([0-9]+)/like', LikePost),
+                               ('/([0-9]+)/comment', NewComment),
                                ('/notallowed', NotAllowed),
                                ('/deleted', Deleted),
                                ('/like([0-9])', Liked)
