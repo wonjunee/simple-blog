@@ -10,6 +10,8 @@ https://www.python.org/downloads/
 
 After you download all of them and install them, save this repository on your local drive. Go to the folder you save this repository, type *"dev_appserver.py ."*. Then, you can go to *localhost:8080/* on your webbrowser and enjoy the blog page.
 
+Another good commandline to know is "--clear_datastore=1" (for mac user). When you include this line and run the app engine, "dev_appserver.py --clear_datastore=1 ." it will clear all the data and restart the app. I found this useful when I update the data structure and rerun the app.
+
 ---
 Information
 ---------
