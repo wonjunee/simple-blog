@@ -143,7 +143,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
     username = db.StringProperty(required = True)
-    like_number = db.StringProperty()
+    like_number = db.TextProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -179,7 +179,7 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         username = self.user.name
-        like_number = 0
+        like_number = "0|"
 
         if subject and content:
             p = Post(parent = blog_key(), subject = subject, content = content, username = username, like_number = like_number)
@@ -259,33 +259,17 @@ class DeletePost(BlogHandler):
 
 # A class for liking a post
 class LikePost(BlogHandler):
-	# def get(self, post_id):
-	# 	key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-	# 	post = db.get(key)
+	def get(self, post_id):
+		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		post = db.get(key)
+		like_number, users = post.like_number.split("|")
+		like_number = like_number[0]
+		if self.user.name in users:
+			
+		post.like_number  = str(int(post.like_number) + 1)
+		post.put()
 
-	# 	if self.user:
-	# 		if self.user.name == post.username:
-	# 		    self.render("deletepost.html", post = post, content=post.content, subject=post.subject)
-	# 		else:
-	# 			self.redirect("/notallowed")
-	# 	else:
-	# 	    self.redirect("/login")
-
-	def post(self, post_id):
-		if not self.user:
-			self.redirect('/')
-
-		delete_choice = self.request.get('q')
-		username = self.user.name
-
-		if delete_choice == "yes":
-			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-			post = db.get(key)
-			post.delete()
-			self.redirect('/deleted')
-		elif delete_choice == "no":
-			self.redirect('/')
-
+		self.redirect("/")
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
@@ -406,6 +390,7 @@ app = webapp2.WSGIApplication([
                                ('/welcome', Welcome),
                                ('/([0-9]+)/edit', EditPost),
                                ('/([0-9]+)/delete', DeletePost),
+                               ('/([0-9]+)/like', LikePost),
                                ('/notallowed', NotAllowed),
                                ('/deleted', Deleted)
                                ],
