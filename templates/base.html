@@ -3,12 +3,12 @@
 <head>
   <link type="text/css" rel="stylesheet" href="/static/main.css" />
 
-  <title>Blog - Final Project</title>
+  <title>Wonjun - School Planning</title>
 </head>
 
 <body>
   <a href="/" class="main-title">
-    Simple Blog
+    Wonjun's schedule
   </a>
 
   <div class="login-area">
@@ -20,7 +20,17 @@
       <a class="login-link" href="/signup">signup</a>
     {% endif %}
   </div>
-
+  <hr>
+  <div class="menu">
+    <a href="/" class="menu-item">
+      Home
+    </a>
+    <a href="/summary" class="menu-item">
+      Summary
+    </a>
+  </div>
+  <hr>
+  <br>
   <div id="content">
   {% block content %}
   {% endblock %}

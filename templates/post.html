@@ -3,9 +3,6 @@
     <a href="/{{p.key().id()}}"" class="post-title">
       {{p.subject}}
     </a>
-    <a href="/{{p.key().id()}}/like" class="post-edit">
-      Like - {{p.like_number}}
-    </a>
 
     <div class="post-date">
       written by {{p.username}} - {{p.created.strftime("%b %d, %Y")}}
@@ -19,7 +16,71 @@
   </div>
 
   <div class="post-content">
-    {{p._render_text | safe}}
+  <h3>{{ p.total }} Tasks Completed</h3>
+    <table style="margin-left:5%">
+      <tr>
+        <td class="label">
+          {{p.gre_words}} GRE - Words
+        </td>
+        <td>
+          {{p.gre_words_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.gre_essays}} GRE - Essays
+        </td> 
+        
+        <td>
+          {{p.gre_essays_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.gre_verbal}} GRE - Verbal
+        </td>
+        
+        <td>
+          {{p.gre_verbal_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.gre_math}} GRE Math
+        </td>
+        
+        <td>
+          {{p.gre_math_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.school_research}} School Research
+        </td>
+        
+        <td>
+          {{p.school_research_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.sop}} Statement of Purpose
+        </td>
+        
+        <td>
+          {{p.sop_more}}
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          {{p.other}} Other
+        </td>
+        
+        <td>
+          {{p.other_more}}
+        </td>
+      </tr>
+    </table>
   </div>
 
   <br>

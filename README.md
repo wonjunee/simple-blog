@@ -19,3 +19,6 @@ Information
 - **app.yaml**: This is for Google App Engine. I had to update this in order to let Google App Engine to bring *Jinja2* library and to access *css* file from **static** folder.
 - **templates** folder: The folder contains all of the html templates that are used for the blog.
 - **static** folder: THe folder contains the *css* file.
+# TO DO LIST app
+This is the to do list app for my graduate school preparation.
+The website is here *https://wonjun-todo.appspot.com*

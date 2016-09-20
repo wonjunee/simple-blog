@@ -1,21 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>new post</h2>
+  <h1>To do list checking</h1>
 
     <form method="post">
       <label>
-        <div>subject</div>
+        <div class="post-title">Date</div>
         <input type="text" name="subject" value="{{subject}}">
       </label>
-
-      <label>
-        <div>blog</div>
-        <textarea name="content">{{content}}</textarea>
-      </label>
-
+      <br>
+        <div class="post-title space-below">To Do List</div>
+        <table>
+          <tr>
+            <td class="label">
+              <label>
+                <input type="checkbox" name="todo" value="gre-words">GRE - Words<br>
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="gre-words">{{gre_words}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+                <input type="checkbox" name="todo" value="gre-essays">GRE - Essays
+              </label>
+            </td> 
+            <td>
+              <textarea class="todolist" name="gre-essays">{{gre_essays}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+                <input type="checkbox" name="todo" value="gre-verbal">GRE - Verbal
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="gre-verbal">{{gre_verbal}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+              <input type="checkbox" name="todo" value="gre-math">GRE Math
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="gre-math">{{gre_math}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+              <input type="checkbox" name="todo" value="school-research">School Research
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="school-research">{{school_research}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+              <input type="checkbox" name="todo" value="sop">Statement of Purpose
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="sop">{{sop}}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">
+              <label>
+              <input type="checkbox" name="todo" value="other">Other
+              </label>
+            </td>
+            <td>
+              <textarea class="todolist" name="other">{{other}}</textarea>
+            </td>
+          </tr>
+        </table>
       <div class="error">{{error}}</div>
-
+      <br>
       <input type="submit">
     </form>
 {% endblock %}
