@@ -4,85 +4,18 @@
   <h2>edit post</h2>
     <form method="post">
       <label>
-        <div class="post-title">Date</div>
+        <div>subject</div>
+
         <input type="text" name="subject" value="{{subject}}">
       </label>
-      <br>
-      <div class="post-title space-below">To Do List</div>
-        <table>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="gre-words">GRE - Words
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="gre-words">{{gre_words_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="gre-essays">GRE - Essays
-              </label>
-            </td> 
-            <td>
-              <textarea class="todolist" name="gre-essays">{{gre_essays_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="gre-verbal">GRE - Verbal
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="gre-verbal">{{gre_verbal_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="gre-math">GRE Math
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="gre-math">{{gre_math_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="school-research">School Research
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="school-research">{{school_research_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="sop">Statement of Purpose
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="sop">{{sop_more}}</textarea>
-            </td>
-          </tr>
-          <tr>
-            <td class="label">
-              <label>
-                <input type="checkbox" name="todo" value="other">Other
-              </label>
-            </td>
-            <td>
-              <textarea class="todolist" name="other">{{other_more}}</textarea>
-            </td>
-          </tr>
-        </table>
+
+      <label>
+        <div>blog</div>
+        <textarea name="content">{{content}}</textarea>
+      </label>
+
       <div class="error">{{error}}</div>
-      <br>
+
       <input type="submit">
     </form>
 {% endblock %}

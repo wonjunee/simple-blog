@@ -2,78 +2,8 @@
 
 {% block content %}
 <form method="post" class="comment">
-  <div class="comment-heading">New comment for the subject: {{subject}}</div>
-  
-  <div class="post-content">
-    <table style="margin-left:5%">
-      <tr>
-        <td class="label">
-          {{p.gre_words}} GRE - Words
-        </td>
-        <td>
-          {{p.gre_words_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.gre_essays}} GRE - Essays
-        </td> 
-        
-        <td>
-          {{p.gre_essays_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.gre_verbal}} GRE - Verbal
-        </td>
-        
-        <td>
-          {{p.gre_verbal_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.gre_math}} GRE Math
-        </td>
-        
-        <td>
-          {{p.gre_math_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.school_research}} School Research
-        </td>
-        
-        <td>
-          {{p.school_research_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.sop}} Statement of Purpose
-        </td>
-        
-        <td>
-          {{p.sop_more}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">
-          {{p.other}} Other
-        </td>
-        
-        <td>
-          {{p.other_more}}
-        </td>
-      </tr>
-    </table>
-
-  </div>
-
-  <br>
-
+  <div class="comment-heading">New Comment for Subject: {{subject}}</div>
+  <p>{{content}}</p>
   <div class="comment-heading">Write a comment</div>
   <label>
     <textarea class="comment" name="comment"></textarea>
@@ -81,7 +11,6 @@
   </label>
 
   <div class=error>{{error}}</div>
-  <br>
   <input type="submit">
 </form>
 {% endblock %}
